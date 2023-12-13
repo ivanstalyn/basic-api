@@ -5,8 +5,6 @@ const { rutas } = require('../config/rutas');
 
 class Server {
 
-  insHTTP = null;
-
   constructor() {
     this.app = express();
     this.insHTTP = null;

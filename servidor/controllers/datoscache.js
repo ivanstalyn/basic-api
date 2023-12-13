@@ -1,13 +1,12 @@
 const logger = require('../helpers/logger');
 const { delay } = require('../helpers/util');
 const { response, request } = require('express');
-const { v4: uuidv4 } = require('uuid');
 
-const Temperatura = {
+const DatosCache = {
 
-  convertir: async function(req = request, res = response) {
-    const msgLocation = 'Controllers::Temperatura::convertir()';
-    logger.info('Mensaje recibido por POST', msgLocation);
+  generar: async function(req = request, res = response) {
+    const msgLocation = 'Controllers::DatosCache::generar()';
+    logger.info('Mensaje recibido por GET', msgLocation);
     logger.trace(`req.headers: ${JSON.stringify(req.headers)}`, msgLocation);
     logger.trace(`req.ip: ${JSON.stringify(req.ip)}`, msgLocation);
     logger.trace(`req.ips: ${JSON.stringify(req.ips)}`, msgLocation);
@@ -18,34 +17,15 @@ const Temperatura = {
     logger.debug(`Mensaje original: ${JSON.stringify(req.body)}`, msgLocation);
     let objMensaje = req.body;
 
-    if (!objMensaje.valor){
-      return res.status(400).json({ code: 400, message: 'No hay propiedad valor' });
-
-    }
-
+    const datoid = req.params.datoid;
     try {
       let respuesta = {
-        id: uuidv4(),
-        valor: 0.0,
-        unidad: 'na',
-        texto: 'na',
+        id: datoid,
       };
 
-      if (objMensaje.to === 'C'){
-        logger.debug(`Transformado a  original: ${JSON.stringify(req.body)}`, msgLocation);
-        respuesta.valor = (parseFloat(objMensaje.valor) - 32.0) * 5.0 / 9.0;
-        respuesta.unidad = 'Celcios';
-
-      } else if (objMensaje.to === 'F'){
-        respuesta.valor = (parseFloat(objMensaje.valor) * 9.0 / 5.0) + 32.0;
-        respuesta.unidad = 'Fahrenheit';
-      }
-
-      respuesta.texto = `${respuesta.valor} ${respuesta.unidad}`;
-
-      if (objMensaje.delay) {
-        let max = objMensaje.delay.min;
-        let min = objMensaje.delay.max;
+      if (process.env.DELAY_ENABLED === 'true') {
+        let max = parseInt(process.env.DELAY_MAX, 10);
+        let min = parseInt(process.env.DELAY_MIN, 10);
         let ms = Math.floor(Math.random() * (max - min + 1)) + min;
         logger.debug(`Tiempo espera: ${ms} ms`, msgLocation);
         await delay(ms);
@@ -61,5 +41,5 @@ const Temperatura = {
   },
 };
 
-module.exports = Temperatura;
+module.exports = DatosCache;
 
