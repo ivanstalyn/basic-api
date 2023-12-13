@@ -11,5 +11,8 @@ services:
     environment:
       PUERTO_HTTP: "8080"
       LOG_LEVEL: "TRACE"
+      DELAY_MIN: "1500"
+      DELAY_MAX: "3000"
+      DELAY_ENABLED: "true"
       
 

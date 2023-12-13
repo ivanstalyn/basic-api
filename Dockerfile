@@ -1,10 +1,17 @@
-FROM registry.access.redhat.com/ubi8/nodejs-14-minimal:1-77
+FROM registry.access.redhat.com/ubi8/nodejs-18-minimal:latest
 
-WORKDIR /opt/app-root/src
+USER 0
+RUN mkdir -p /opt/app-root/src
 
-COPY package.json /opt/app-root/src
-RUN npm install --only=prod
+COPY package*.json /opt/app-root/src
 COPY servidor /opt/app-root/src/servidor
 COPY public /opt/app-root/src/public
+
+RUN chown -R 1001:0 /opt/app-root
+
+USER 1001
+WORKDIR /opt/app-root/src
+ENV NODE_ENV=production
+RUN npm ci
 
 CMD ["npm", "start"]
