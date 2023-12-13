@@ -31,14 +31,14 @@ const Temperatura = {
         texto: 'na',
       };
 
-      if (objMensaje.to === 'F'){
+      if (objMensaje.to === 'C'){
         logger.debug(`Transformado a  original: ${JSON.stringify(req.body)}`, msgLocation);
         respuesta.valor = (parseFloat(objMensaje.valor) - 32.0) * 5.0 / 9.0;
-        respuesta.unidad = 'Fahrenheit';
-
-      } else if (objMensaje.to === 'C'){
-        respuesta.valor = (parseFloat(objMensaje.valor) * 9.0 / 5.0) + 32.0;
         respuesta.unidad = 'Celcios';
+
+      } else if (objMensaje.to === 'F'){
+        respuesta.valor = (parseFloat(objMensaje.valor) * 9.0 / 5.0) + 32.0;
+        respuesta.unidad = 'Fahrenheit';
       }
 
       respuesta.texto = `${respuesta.valor} ${respuesta.unidad}`;
